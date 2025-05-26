@@ -1,42 +1,26 @@
-// src/components/Mascota.js
-import React from 'react';
+// src/components/MascotaList.js
+import React, { useEffect, useState } from 'react';
+import { Mascota } from './mascota';
 
-export function Mascota({ mascota }) {
-  const mostrarDetalle = () => {
-    const ventana = window.open('', '_blank');
-    ventana.document.write(`
-      <html>
-        <head>
-          <title>${mascota.nombre}</title>
-          <style>
-            body { font-family: sans-serif; padding: 20px; }
-            img { max-width: 300px; height: auto; }
-          </style>
-        </head>
-        <body>
-          <h1>${mascota.nombre}</h1>
-          <img src="${mascota.foto}" alt="Foto de ${mascota.nombre}" />
-          <p><strong>Especie:</strong> ${mascota.especie}</p>
-          <p><strong>Raza:</strong> ${mascota.raza}</p>
-          <p>${mascota.descripcion}</p>
-        </body>
-      </html>
-    `);
-    ventana.document.close();
-  };
+export function MascotaList() {
+  const [mascotas, setMascotas] = useState([]);
+
+  useEffect(() => {
+    fetch("https://gist.githubusercontent.com/josejbocanegra/829a853c6c68880477697acd0490cecc/raw/4eb2d8431a0253f764dad867decc592038e80cac/mascotas.json")
+      .then(res => res.json())
+      .then(data => setMascotas(data))
+      .catch(err => console.error(err));
+  }, []);
 
   return (
-    <div className="mascota-card">
-      <h2>{mascota.nombre}</h2>
-      <img
-        src={mascota.foto}
-        alt={`Foto de ${mascota.nombre}`}
-        onClick={mostrarDetalle}
-        style={{ cursor: 'pointer' }}
-      />
-      <p><strong>Especie:</strong> {mascota.especie}</p>
-      <p><strong>Raza:</strong> {mascota.raza}</p>
-      <p>{mascota.descripcion}</p>
+    <div className="galeria-container">
+      <h1>Galería de Mascotas</h1>
+      <div className="galeria">
+        {mascotas.map((m, idx) => (
+          <Mascota key={idx} mascota={m} />
+        ))}
+      </div>
     </div>
   );
 }
+
